@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Arthur's first game</title>
+        <link rel="icon" type="image/png" href="favicon.png" />
+
+        <link rel="stylesheet" type="text/css" href="arthur.css" />
+        <link href='http://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+    </head>
+
+    <body class="yui3-skin-sam">
+
+        <!-- YUI3 -->
+        <script type="text/javascript" src="lib/yui3/build/yui/yui-min.js"></script>
+
+        <!-- Processing -->
+        <script type="text/javascript" src="lib/processing.min.js"></script>
+        <script type="text/javascript" src="lib/crafty.js"></script>
+        <script type="text/javascript" src="lib/howler.min.js"></script>
+
+        <!-- Markup  -->
+        <div class="title"><img src="images/aeberhard.png" />Bienvenue Arthur!</div>
+        <canvas id="canvas1"></canvas>
+        <div class="stage"></div>
+        <div class="magicwand"></div>
+        <div class="video-overlay"></div>
+        <div class="video-underlay"></div>
+
+        <!-- Main -->
+        <script type="text/javascript" src="js/arthur.js"></script>
+
+        <script type="text/javascript">
+            YUI().use("anim", "event-key", "art", "transition", "overlay", function(Y) {
+                window.Y = Y;
+
+                var doc = Y.one("doc"),
+                    stage = Y.one(".stage"),
+                    canvas = document.getElementById("canvas1"),
+                    processingInstance = new Processing(canvas, Y.Art.drawer);  // attaching the sketchProc function to the canvas
+
+                doc.on("keydown", function(e) {
+                    Y.log("key pressed: " + e.keyCode, e);
+
+                    switch (e.keyCode) {
+                        case 186:                                               // �,�,�,$: fx
+                        case 192:
+                        case 220:
+                        case 223:
+                            showFx();
+                            break;
+                        case 9:                                                 // tab
+                        case 81:
+                            showMario(e);
+                            break;
+                    }
+                });
+
+                // Title
+                new Audio("sound/Music_Box-Big_Daddy-1389738694.mp3").play();
+                Y.later(2000, this, function() {
+                    Y.one(".title").hide(true);
+                });
+
+                /** 0-9: Background music **/
+                var snd, cSound,
+                    playMusic = function(e, path) {
+                        Y.log("Playing sound: " + path);
+                        stopMusic();
+                        hideOverlay();
+                        e.halt(true);
+                        if (cSound === path) {
+                            cSound = null;
+                        } else {
+                            cSound = path;
+                            snd = new Audio("sound/music/" + path);
+                            snd.addEventListener('ended', function() {
+                                cSound = null;
+                            }, false);
+                            //snd = new Howl({
+                            //    urls: ["sound/music/" + path],
+                            //    onend: function() {
+                            //        cSound = null;
+                            //    }
+                            //});
+                            snd.play();
+                        }
+                    },
+                    stopMusic = function() {
+                        snd && snd.pause();
+                        cSound = null;
+                    };
+                doc.on("key", playMusic, "down:49", this, "01 - Star Wars - Main Theme (Star Wars).mp3");
+                doc.on("key", playMusic, "down:50", this, "zeldatheme.mp3");
+                doc.on("key", playMusic, "down:51", this, "OVER THE RAINBOW - JUDY GARLAND.mp3");
+                doc.on("key", playMusic, "down:52", this, "kotch.mp3");
+                doc.on("key", playMusic, "down:53", this, "rachmaninoff.mp3");
+                doc.on("key", playMusic, "down:54", this, "john.coltrane-my.favorite.things.mp3");
+                doc.on("key", playMusic, "down:55", this, "3553737_goran_bregovic__kalasnjikov_by_goran_bregovic.mp3");
+                doc.on("key", playMusic, "down:56", this, "51371-pon-de-river-pon-de-bank-elephant-man.mp3");
+                doc.on("key", playMusic, "down:57", this, "top-5-anime-songs-3.mp3");
+                doc.on("key", playMusic, "down:48", this, "Film - Le Grand Bleu.mp3");
+                doc.on("key", playMusic, "down:219", this, "Unconditional love-gentleman.mp3");
+                doc.on("key", playMusic, "down:221", this, "Get lucky.mp3");
+
+                // c: clear
+                doc.on("key", function(e) {
+                    Y.log("clear");
+                    stopMusic();
+                    stage.setContent("");
+                    e.halt(true);
+                    hideOverlay();
+                }, "67,backspace", this);
+
+                // Mario
+                var marioSnd,
+                    showMario = function(e) {
+                        var mario = Y.Node.create('<div class="mario"></div>');
+                        stage.append(mario);
+                        mario.setStyles({
+                            top: Math.random() * 100 + "%",
+                            left: Math.random() * 100 + "%"
+                        });
+                        if (marioSnd)
+                            marioSnd.pause();
+                        marioSnd = new Audio("sound/sm64_mario_here_we_go.wav");
+                        marioSnd.play();
+                        e.halt(true);
+                    };
+                doc.on("key", showMario, "down:20,191");                        // capslock, tilda
+
+                // South park fart
+                doc.on("key", function() {
+                    if (!Y.one(".southpark")) {
+                        var south = Y.Node.create('<div class="southpark"></div>'),
+                            snd = new Audio("sound/Funny Fart Trail-SoundBible.com-1691782690.mp3");
+                        stage.append(south);
+                        snd.play();
+                        Y.later(1240, this, function() {
+                            south.remove(true);
+                        });
+                    }
+                }, "e,r,f");
+
+                // Arthur
+                var reverseAndDestroy = function(anim) {
+                    anim.set("reverse", true);
+                    anim.once("end", function(e) {
+                        this.get("node").remove(true);
+                    });
+                    anim.run();
+                };
+                doc.on("key", function() {
+                    if (!Y.one(".arthur")) {
+                        stage.append('<div class="arthur"></div>');
+                        new Audio("sound/sm64_mario_doh.wav").play();
+
+                        var anim = new Y.Anim({
+                            node: ".arthur",
+                            easing: Y.Easing.backOut,
+                            from: {
+                                bottom: "-500px"
+                            },
+                            to: {
+                                bottom: "-40px"
+                            }
+                        }).run();
+                        Y.later(1300, this, reverseAndDestroy, anim);
+                    }
+                }, "t,z,u");
+
+                // Fx
+                var showFx = function() {
+                    if (!Y.one(".fx")) {
+                        stage.append('<div class="fx"></div>');
+                        new Audio("sound/flyby-Conor-1500306612.mp3").play();
+
+                        Y.one(".fx").transition({
+                            easing: "linear",
+                            duration: 1,
+                            right: Y.DOM.winWidth() + "px"
+                        }, function() {
+                            this.remove(true);
+                        });
+                    }
+                };
+
+                // Sarah
+                doc.on("key", function() {
+                    if (!Y.one(".sarah")) {
+                        stage.append('<div class="sarah"></div>');
+                        new Audio("sound/sm64_ukkiki.wav").play();
+
+                        var anim = new Y.Anim({
+                            node: ".sarah",
+                            easing: Y.Easing.backOut,
+                            to: {
+                                top: "0px"
+                            },
+                            from: {
+                                top: "-400px"
+                            },
+                            duration: 0.5
+                        }).run();
+                        Y.later(900, this, reverseAndDestroy, anim);
+                    }
+                }, "i,o,p");
+
+                // Piano
+                new Y.Art.Piano().render();
+
+                // Magic wand
+                var timer;
+                doc.on("mousemove", function(e) {
+                    Y.one(".magicwand").show(true)
+                        .setStyles({
+                            top: e.clientY,
+                            left: e.clientX,
+                            transform: "rotate(" + (e.clientX / Y.DOM.winWidth() - 0.5) * 100 + "deg)"
+                        });
+                    timer && timer.cancel();
+                    timer = Y.later(3000, this, function() {
+                        Y.one(".magicwand").hide(true);
+                    });
+                });
+                doc.on(["click", "contextmenu"], function(e) {
+                    var objects = ["tennis", "rabbit"],
+                        name = objects[Math.floor(Math.random() * objects.length)];
+
+                    new Howl({
+                        urls: ["sound/" + name + ".mp3"]
+                    }).play();
+
+                    var ball = Y.Node.create('<div class="object-' + name + '"></div>');
+                    stage.append(ball);
+                    ball.setStyles({
+                        top: "100px",
+                        left: Y.DOM.winWidth() + "px"
+                    })
+                        .transition({
+                            easing: "linear",
+                            duration: (1 - (e.clientX / Y.DOM.winWidth())) * 0.4 + 0.1,
+                            left: e.clientX + "px",
+                            top: {
+                                easing: "ease-in",
+                                value: e.clientY + "px"
+                            }
+                        }, function() {
+                            ball.transition({
+                                easing: "cubic-bezier(0, 0, 0.8, 1)",
+                                duration: .5,
+                                //left: (e.clientX + (Math.random() - 0.5) * 400) + "px",
+                                left: (e.clientX + 200) + "px",
+                                top: {
+                                    easing: "linear",
+                                    duration: 1.6,
+                                    value: e.clientY + 1100 + "px"
+                                },
+                                end: function() {
+
+                                }
+                            }, function() {
+                                ball.remove(true);
+                            });
+                        });
+
+                    e.halt(true);
+                });
+
+                var handler, overlay,
+                    hideOverlay = function(e) {
+                        overlay && overlay.destroy();
+                        handler && handler.detach();
+                        Y.all(".video-overlay, .video-underlay").hide();
+                        e && e.halt(true);
+                    };
+                doc.on("key", function(e) {
+                    if (!overlay || overlay.get("destroyed")) {
+                        stopMusic();
+                        Y.all(".video-overlay, .video-underlay").setStyle("display", "block");
+                        overlay = new Y.Overlay({
+                            visible: true,
+                            centered: true,
+                            width: 853,
+                            height: 480,
+                            zIndex: 200,
+                            bodyContent: '<iframe width="853" height="480" src="//www.youtube.com/embed/8zLx_JtcQVI?rel=0&amp;showinfo=0&amp;autoplay=1" frameborder="0" allowfullscreen></iframe>',
+                            modal: true,
+                            fillHeight: null
+                        }).render();
+                        Y.one(".video-overlay").focus();
+                        handler = Y.one(".video-overlay").on(["click", "keydown"], hideOverlay);
+                    } else {
+                        hideOverlay();
+                    }
+                    e.halt(true);
+                }, "down:32,88,89,enter,226,16,17,18,255");                     // y,x,\,shift,ctrl,alt,fn
+
+                // Game 
+                var speed = 9, jumpSpeed = 25;
+                Crafty.init(Y.DOM.winWidth(), 500);                             // Init crafty
+                Crafty.canvas.init();
+                Crafty.sprite(128, 128, 'images/mannequin.png', {
+                    MannequinSprite: [0, 0]
+                });
+                Crafty.e("2D, Canvas, Solid, MannequinSprite, SpriteAnimation, Fourway, Keyboard, Collision, Gravity")
+                    .gravity("Solid")                                           // the player will stop falling if it hits anything with a component of Solid
+                    .gravityConst(1)                                            // determines speed of falling
+                    .attr({x: 100, y: 0, w: 128, h: 128})                       // set width and height
+                    .reel("idle", 800, 0, 0, 4)                                 // Set up animation
+                    .reel("jump", 800, 0, 4, 5)
+                    .reel("run", 800, [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2]]) // Specify frames 1 by 1 since the anim spans on 2 cells
+                    .animate("idle", -1)
+                    .bind("KeyDown", function() {
+                        if (this.isDown('LEFT_ARROW') || this.isDown("A")) {
+                            this.animate("run", -1);
+                            this.flip();
+                        }
+                        if (this.isDown('RIGHT_ARROW') || this.isDown("D")) {
+                            this.animate("run", -1);
+                            this.unflip();
+                        }
+                        if (!this._falling && (this.isDown("UP_ARROW") || this.isDown("W"))) {
+                            this.animate("jump");
+                        }
+                    })
+                    .bind("KeyUp", function() {
+                        if (!this._falling && !this.isDown('LEFT_ARROW') && !this.isDown('RIGHT_ARROW') && !this.isDown("UP_ARROW")) {
+                            this.animate("idle", -1);
+                        }
+                    })
+                    .multiway(speed, {
+                        RIGHT_ARROW: 0,
+                        LEFT_ARROW: 180,
+                        D: 0,
+                        A: 180
+                    })
+                    .bind("EnterFrame", function() {
+                        if (this.disableControls)
+                            return;
+                        if (this._up) {
+                            this.y -= jumpSpeed;
+                            this._falling = true;
+                            this.trigger('Moved', {x: this._x, y: this._y + jumpSpeed});
+                        }
+
+                        if (this.x > Y.DOM.winWidth() - 100)                    // keep the player on the screen
+                            this.x = Y.DOM.winWidth() - 100;
+                        if (this.x < -20)
+                            this.x = -20;
+                    })
+                    .bind("KeyDown", function(e) {
+                        if (!this._falling && (e.key === Crafty.keys.UP_ARROW || e.key === Crafty.keys.W))
+                            this._up = true;
+                    })
+                    .collision()
+                    .onHit("Solid", function() {
+                        if (this.isDown('LEFT_ARROW') || this.isDown("A")) {
+                            this.animate("run", -1);
+                            this.flip();
+                        } else if (this.isDown('RIGHT_ARROW') || this.isDown("D")) {
+                            this.animate("run", -1);
+                            this.unflip();
+                        } else {
+                            this.animate("idle");
+                        }
+                    });
+
+                Crafty.e("2D, Solid").attr({x: 0, y: 500, w: Y.DOM.winWidth(), h: 50});
+                Y.one("#cr-stage").focus();
+
+                // Prevent key 
+                doc.on("key", function(e) {
+                    e.halt(true);
+                }, "down:112,113,114,115,117,118,119,120,121,123,"          // f1-f12
+                    + "167,166");                                               //prevpage,nextpage
+            });
+        </script>
+    </body>
+</html>

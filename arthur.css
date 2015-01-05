@@ -1,0 +1,193 @@
+/**
+*
+*/
+body {
+    background: black;
+    overflow: hidden;
+    cursor: none;
+    margin: 0;
+}
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    /*z-index: 1000;*/
+}
+.title {
+    font-family: 'Satisfy', cursive;
+    width: 100%;
+    text-align: center;
+    margin-top: 150px;
+    z-index: 140;
+    color: #F4BF01;
+    position: absolute;
+    font-size: 5em;
+    font-weight: bold;
+    text-shadow: 2px 3px 1px white;
+}
+.title img {
+    vertical-align: middle;
+    margin-right: 7px;
+}
+.mario {
+    position: absolute;
+    background: url(images/mario.gif) no-repeat -20px -35px;
+    width: 185px;
+    height: 220px;
+    background-size: 220px;
+    margin-left: -90px;
+    margin-top: -110px;
+}
+.southpark {
+    position: absolute;
+    background: url(images/south_park_gif_10_by_kylemygod-d4j7iuh.gif) no-repeat;
+    width: 131px;
+    height: 140px;
+    top: 50px;
+    left: 50px;
+}
+.arthur {    
+    position: absolute;
+    background: url(images/arthur.png) no-repeat;
+    width: 450px;
+    height: 496px;
+    bottom: -500px;
+    left: 80px;
+    background-size: 450px;
+}
+.fx {
+    position: absolute;
+    background: url(images/fx2_00000.png) no-repeat;
+    width: 400px;
+    height: 255px;
+    top: 30%;
+    right: -400px; 
+}
+.sarah {
+    position: absolute;
+    background: url(images/sarah1_00016.png) no-repeat;
+    width: 353px;
+    height: 389px;
+    top: -400px;
+    left: 40%; 
+}
+.object-tennis {
+    position: absolute;
+    background: url(images/tennis.png) no-repeat;
+    width: 50px;
+    height: 50px;
+    margin-left: -25px;
+    margin-top: -25px;
+    background-size: 100%;
+    z-index: 101;
+}
+.object-rabbit {
+    position: absolute;
+    background: url(images/rabbit.png) no-repeat;
+    width: 75px;
+    height: 67px;
+    margin-left: -30px;
+    margin-top: -30px;
+    background-size: 100%;
+    z-index: 101;
+}
+.magicwand {
+    position: absolute;
+    background: url(images/magicwand.png) no-repeat;
+    width: 189px;
+    margin-left: -90px;
+    margin-top: -40px;
+    height: 494px;
+    opacity: 0;
+    transform-origin: 50% 10%;
+    z-index: 105;
+}
+#cr-stage {
+    bottom: 0px !important;
+    position: absolute !important;
+}
+
+.video-overlay, .video-underlay {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 205;
+}
+.video-underlay {
+    background-color: rgba(0,0,0, 0.5);
+    z-index: 195;
+}
+
+/* Piano */
+.yui3-piano {
+    position: absolute;
+    width: 492px;
+    height: 341px;
+    bottom: 20px;
+    margin-left: -246px;
+    background: url(images/piano.png) no-repeat;
+    background-size: 100%;
+    z-index: 100;
+    left: 50%;
+}
+.note {
+    width: 40px;
+    height: 40px;
+    background: purple;
+    position: absolute;
+    border-radius: 35px;
+    margin-left: -20px;
+    margin-bottom: -20px;
+}
+.note.do {
+    bottom: 15%;
+    left: 6.5%;
+}
+.note.re {
+    bottom: 15%;
+    left: 20.5%;
+}
+.note.mi {
+    bottom: 15%;
+    left: 35.9%;
+}
+.note.fa {
+    bottom: 15%;
+    left: 50%;
+}
+.note.sol {
+    bottom: 15%;
+    left: 64%;
+}
+.note.la {
+    bottom: 15%;
+    left: 78%;
+}
+.note.si {
+    bottom: 15%;
+    left: 93%;
+}
+.note.dod {
+    bottom: 56%;
+    left: 14.2%;
+}
+.note.red {
+    bottom: 56%;
+    left: 28.8%;
+}
+.note.fad {
+    bottom: 56%;
+    left: 56.6%;
+}
+.note.sold {
+    bottom: 56%;
+    left: 71.4%;
+}
+.note.lad {
+    bottom: 56%;
+    left: 85.4%;
+}
+.note.do2 {
+    display: none;
+}
